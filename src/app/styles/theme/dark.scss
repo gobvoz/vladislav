@@ -1,0 +1,42 @@
+.dark {
+  // colors
+  --color-link: #6b85e0;
+  --color-link-hover: #4559a3;
+  --color-header: white;
+  --color-text: #c0c0c0;
+  --color-secondary-text: #808080;
+  --color-button-default: #c0c0c0;
+  --color-button-primary: #fff;
+  --color-border: #2f4f4f;
+  --color-overlay: #000000c0;
+  --color-error: #ff1a6a;
+
+  // scrollbar
+  --color-scrollbar: #80808050;
+  --color-scrollbar-hover: #808080ff;
+  --color-scrollbar-bg: transparent;
+
+  // pseudo classes
+  --hover-color-button-default: #c0c0c0;
+
+  // background colors
+  --bg-main: #141a2a;
+  --bg-panel: #1e2638;
+  --bg-section: #1a2130;
+  --bg-menu-color: #343a5a;
+  --bg-button-default: #1e2638;
+  --bg-button-primary: linear-gradient(45deg, #ff1a6a 0%, #47cbff 100%);
+  --bg-button-danger: #ff1a6a;
+  --bg-sidebar: #343a5a;
+
+  // pseudo classes
+  --hover-bg-button-default: #3e4658;
+
+  // toggler
+  --bg-toggler-moon: #f5f5f5;
+  --bg-toggler-sun: #303050;
+
+  // skeleton
+  --color-skeleton: #5e5e5e;
+  --color-gradient: rgb(255 255 255 / 20%);
+}

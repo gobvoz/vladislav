@@ -1,0 +1,42 @@
+.light {
+  // colors
+  --color-link: #6b85e0;
+  --color-link-hover: #4559a3;
+  --color-header: black;
+  --color-text: #404040;
+  --color-secondary-text: #b3b3b3;
+  --color-button-default: #000;
+  --color-button-primary: #fff;
+  --color-border: #2f4f4f;
+  --color-overlay: #ddddddc0;
+  --color-error: #ff1a6a;
+
+  // scrollbar
+  --color-scrollbar: #c0c0c070;
+  --color-scrollbar-hover: #c0c0c0ff;
+  --color-scrollbar-bg: transparent;
+
+  // pseudo classes
+  --hover-color-button-default: #404040;
+
+  // background colors
+  --bg-main: #f0f0f6;
+  --bg-panel: #fff;
+  --bg-section: #fff;
+  --bg-menu-color: #ddd;
+  --bg-button-default: #fff;
+  --bg-button-primary: linear-gradient(45deg, #ff1a6a 0%, #47cbff 100%);
+  --bg-button-danger: #ff1a6a;
+  --bg-sidebar: #ddd;
+
+  // pseudo classes
+  --hover-bg-button-default: #ddd;
+
+  // toggler
+  --bg-toggler-moon: #f5f5f5;
+  --bg-toggler-sun: #e5e547;
+
+  // skeleton
+  --color-skeleton: #d9d9d9;
+  --color-gradient: rgb(255 255 255 / 50%);
+}
