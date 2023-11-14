@@ -1,0 +1,17 @@
+.input {
+  width: 100%;
+  padding: var(--padding-field);
+  color: var(--color-main);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-field);
+
+  &:read-only {
+    outline: none;
+    cursor: default;
+  }
+}
+
+.error {
+  border-color: var(--color-error);
+}

@@ -13,7 +13,7 @@ interface Props {
 const PageWrapper: FC<Props> = props => {
   const { children, className } = props;
 
-  return <div className={classNames(cls.wrapper, className)}>{children}</div>;
+  return <section className={classNames(cls.wrapper, className)}>{children}</section>;
 };
 
 export { PageWrapper };
