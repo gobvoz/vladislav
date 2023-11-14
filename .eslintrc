@@ -1,0 +1,50 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["**/src/**/*.test.{ts,tsx}", "**/*.stories.{ts,tsx}"],
+      "rules": {
+        "i18next/no-literal-string": "off",
+        "react/jsx-key": "off"
+      }
+    }
+  ],
+  "ignorePatterns": ["**/*.js"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": ["react", "@typescript-eslint", "@gobvoz/fsd"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "_",
+        "destructuredArrayIgnorePattern": "_",
+        "args": "after-used",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "linebreak-style": ["error", "unix"],
+    "@gobvoz/fsd/path-checker": "error"
+  },
+  "settings": { "react": { "version": "detect" } }
+}
