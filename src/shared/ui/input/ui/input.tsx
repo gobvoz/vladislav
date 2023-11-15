@@ -10,7 +10,7 @@ interface Props extends HTMLInputProps {
   className?: string;
   label?: string;
   value?: string;
-  onChange?: (value: string) => void;
+  onChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void;
   error?: any;
 }
 
@@ -18,7 +18,7 @@ const Input = memo((props: Props) => {
   const { className, label, value, onChange, type = 'text', error, ...otherProps } = props;
 
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.(evt.target.value);
+    onChange?.(evt);
   };
 
   return (

@@ -2,18 +2,15 @@ import { classNames } from 'shared/libs/class-names';
 
 import cls from './section.module.scss';
 
-interface Props {
-  className?: string;
+interface Props extends React.HTMLAttributes<HTMLElement> {
   label?: string;
-
-  children: React.ReactNode;
 }
 
 const Section = (props: Props) => {
-  const { className, label, children } = props;
+  const { className, label, children, ...otherProps } = props;
 
   return (
-    <section className={classNames(cls.section, className)}>
+    <section className={classNames(cls.section, className)} {...otherProps}>
       {label && <h3 className={cls.label}>{label}</h3>}
       {children}
     </section>
