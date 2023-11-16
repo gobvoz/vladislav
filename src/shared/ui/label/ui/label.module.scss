@@ -8,9 +8,13 @@
   position: absolute;
   top: -7px;
   left: 10px;
+  max-width: 80%;
   padding: 0 5px;
   font-size: var(--font-size-s);
   line-height: 1;
   background-color: var(--bg-section);
   z-index: 1;
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
 }
