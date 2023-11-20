@@ -8,6 +8,7 @@ import { BuildMode, BuildOptions, BuildEnv } from './config/webpack/types/config
 const buildConfig = (env: BuildEnv) => {
   const MODE = env.MODE || BuildMode.DEVELOPMENT;
   const isDevelopment = MODE === BuildMode.DEVELOPMENT;
+  const ANALYZER = Boolean(env.ANALYZER) || false;
   dotenv.config({
     path: path.resolve(
       __dirname,
@@ -29,6 +30,7 @@ const buildConfig = (env: BuildEnv) => {
     port: PORT,
     host: HOST,
     project: 'frontend',
+    analyzer: ANALYZER,
   };
 
   const config: webpack.Configuration = buildWebpackConfig(buildOptions);

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack serve",
+    "start:analyzer": "webpack serve --env ANALYZER=true",
     "build:dev": "webpack --env MODE=development",
     "build:prod": "webpack --env MODE=production"
   },

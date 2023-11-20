@@ -17,9 +17,11 @@ export interface BuildOptions {
   port: number;
   host: string;
   project: 'storybook' | 'frontend' | 'jest';
+  analyzer: boolean;
 }
 
 export interface BuildEnv {
   MODE: BuildMode;
   HOST: string;
+  ANALYZER: boolean;
 }
