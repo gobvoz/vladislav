@@ -30,6 +30,17 @@ const messageSlice = createSlice({
       }
       state.list.push(message);
     },
+    markDeleted: (state, action: PayloadAction<number[]>) => {
+      const ids = action.payload;
+      state.list.forEach(item => {
+        if (ids.includes(item.id)) {
+          item.isDeleted = true;
+        }
+        if (item.replayTo && ids.includes(item.replayTo.id)) {
+          item.replayTo.isDeleted = true;
+        }
+      });
+    },
   },
 });
 

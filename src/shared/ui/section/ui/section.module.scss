@@ -1,6 +1,15 @@
+.wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 1px;
+}
+
 .section {
   position: relative;
   display: flex;
+  height: 100%;
   flex-direction: column;
   gap: 15px;
   border: 1px solid var(--color-border);
@@ -11,7 +20,8 @@
 
 .label {
   position: absolute;
-  top: -11px;
+  top: 0;
+  left: var(--padding-section);
   padding: 0 7px;
   z-index: 1;
   white-space: nowrap;

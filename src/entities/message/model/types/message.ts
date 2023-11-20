@@ -5,6 +5,7 @@ export interface Message {
     id: number;
     text: string;
     userName: string;
+    isDeleted?: boolean;
   };
   isPrivate: boolean;
   text: string;
@@ -14,4 +15,5 @@ export interface Message {
   userName: string;
   userLogin: string;
   channelId: string;
+  isDeleted?: boolean;
 }

@@ -2,6 +2,7 @@ import { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { TelegramClient } from 'telegram';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
+import { DeletedMessage, DeletedMessageEvent } from 'telegram/events/DeletedMessage';
 
 import { Section } from 'shared/ui/section';
 import { useAppDispatch } from 'shared/hooks';
@@ -31,6 +32,11 @@ const MessageList = memo(({ client }: Props) => {
     dispatch(messageActions.setMessage(adoptMessage(event.message)));
   };
 
+  const eventDeletedMessage = async (event: DeletedMessageEvent) => {
+    console.log('Deleted message', event.deletedIds);
+    dispatch(messageActions.markDeleted(event.deletedIds));
+  };
+
   useEffect(() => {
     client.connect().then(() => {
       client.getMe().then(me => {
@@ -39,9 +45,11 @@ const MessageList = memo(({ client }: Props) => {
     });
 
     client.addEventHandler(eventNewMessage, new NewMessage({}));
+    client.addEventHandler(eventDeletedMessage, new DeletedMessage({}));
 
     return () => {
       client.removeEventHandler(eventNewMessage, new NewMessage({}));
+      client.removeEventHandler(eventDeletedMessage, new DeletedMessage({}));
     };
   }, []);
 

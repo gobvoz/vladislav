@@ -10,10 +10,12 @@ const Section = (props: Props) => {
   const { className, label, children, ...otherProps } = props;
 
   return (
-    <section className={classNames(cls.section, className)} {...otherProps}>
+    <div className={cls.wrapper}>
       {label && <h3 className={cls.label}>{label}</h3>}
-      {children}
-    </section>
+      <section className={classNames(cls.section, className)} {...otherProps}>
+        {children}
+      </section>
+    </div>
   );
 };
 
