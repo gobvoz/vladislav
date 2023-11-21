@@ -4,6 +4,7 @@ $message-element-padding: 5px;
   position: relative;
   padding: $message-element-padding;
   border-radius: var(--border-radius-message);
+  transition: background-color 0.2s ease-in-out;
 
   &::after {
     content: '';
@@ -17,6 +18,10 @@ $message-element-padding: 5px;
 
 .deleted {
   background-color: var(--bg-color-deleted);
+}
+
+.current {
+  background-color: var(--bg-color-current-animation);
 }
 
 .user {

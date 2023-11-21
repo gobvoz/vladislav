@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { TelegramClient } from 'telegram';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
@@ -26,6 +26,8 @@ const reducerList = {
 const MessageList = memo(({ client }: Props) => {
   const messageList = useSelector(getMessageList);
   const dispatch = useAppDispatch();
+  const listRef = useRef<HTMLDivElement>(null);
+  const [currentMessageId, setCurrentMessageId] = useState<number | null>(null);
 
   const eventNewMessage = async (event: NewMessageEvent) => {
     console.log('New message', event.message);
@@ -36,6 +38,19 @@ const MessageList = memo(({ client }: Props) => {
     console.log('Deleted message', event.deletedIds);
     dispatch(messageActions.markDeleted(event.deletedIds));
   };
+
+  const smoothScrollToMessage = useCallback((id: number) => {
+    if (listRef.current) {
+      const message = listRef.current.querySelector(`#m${id}`);
+      if (message) {
+        message.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        setCurrentMessageId(id);
+        setTimeout(() => {
+          setCurrentMessageId(null);
+        }, 300);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     client.connect().then(() => {
@@ -56,9 +71,14 @@ const MessageList = memo(({ client }: Props) => {
   return (
     <DynamicModuleLoader reducerList={reducerList}>
       <Section label={`Messages (${messageList.length})`}>
-        <div className={cls.wrapper}>
+        <div className={cls.wrapper} ref={listRef}>
           {messageList.map(message => (
-            <MessageElement key={message.id} message={message} />
+            <MessageElement
+              key={message.id}
+              message={message}
+              smoothScroll={smoothScrollToMessage}
+              isCurrent={message.id === currentMessageId}
+            />
           ))}
         </div>
       </Section>
