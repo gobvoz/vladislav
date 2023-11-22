@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { TelegramClient } from 'telegram';
+import { Api, TelegramClient } from 'telegram';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { DeletedMessage, DeletedMessageEvent } from 'telegram/events/DeletedMessage';
 
@@ -11,9 +11,11 @@ import { DynamicModuleLoader } from 'shared/libs/dynamic-module-loader';
 import { getMessageList } from '../../model/selectors/message-selectors';
 import { messageActions, messageReducer } from '../../model/slice/message-slice';
 import { adoptMessage } from '../../model/adapters/adopt-message';
-import { MessageElement } from '../message-element/message-element';
+import { MessageElement } from '../../../../shared/ui/message-element/message-element';
 
 import cls from './message-list.module.scss';
+import { AnswerToMessage } from 'features/answer-to-message/ui/answer-to-message/answer-to-message';
+import { MessageReplay } from 'shared/ui/message-replay/message-replay';
 
 interface Props {
   client: TelegramClient;
@@ -28,10 +30,16 @@ const MessageList = memo(({ client }: Props) => {
   const dispatch = useAppDispatch();
   const listRef = useRef<HTMLDivElement>(null);
   const [currentMessageId, setCurrentMessageId] = useState<number | null>(null);
+  const [lastMessage, setLastMessage] = useState<Api.Message | null>(null);
 
   const eventNewMessage = async (event: NewMessageEvent) => {
     console.log('New message', event.message);
     dispatch(messageActions.setMessage(adoptMessage(event.message)));
+    setLastMessage(event.message);
+  };
+
+  const eventPrevedMedved = async (event: NewMessageEvent) => {
+    event.message.reply({ message: 'Превед, коль ни шутиш.' });
   };
 
   const eventDeletedMessage = async (event: DeletedMessageEvent) => {
@@ -60,6 +68,7 @@ const MessageList = memo(({ client }: Props) => {
     });
 
     client.addEventHandler(eventNewMessage, new NewMessage({}));
+    client.addEventHandler(eventPrevedMedved, new NewMessage({ pattern: /превед медвед/ }));
     client.addEventHandler(eventDeletedMessage, new DeletedMessage({}));
 
     return () => {
@@ -67,6 +76,15 @@ const MessageList = memo(({ client }: Props) => {
       client.removeEventHandler(eventDeletedMessage, new DeletedMessage({}));
     };
   }, []);
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollBy({
+        top: 1000,
+        behavior: 'smooth',
+      });
+    }
+  }, [messageList]);
 
   return (
     <DynamicModuleLoader reducerList={reducerList}>
@@ -76,12 +94,14 @@ const MessageList = memo(({ client }: Props) => {
             <MessageElement
               key={message.id}
               message={message}
-              smoothScroll={smoothScrollToMessage}
-              isCurrent={message.id === currentMessageId}
-            />
+              isCurrent={message.id === currentMessageId}>
+              <MessageReplay message={message} smoothScroll={smoothScrollToMessage} />
+            </MessageElement>
           ))}
         </div>
       </Section>
+
+      <AnswerToMessage message={lastMessage} />
     </DynamicModuleLoader>
   );
 });

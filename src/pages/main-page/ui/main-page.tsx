@@ -20,7 +20,6 @@ const MainPage: FC = memo(() => {
   const [{ phoneNumber, password, phoneCode }, setAuthInfo] = useState(initialState);
 
   const [isLoginSectionVisible, setLoginSectionVisibility] = useState(true);
-  const [isTestSectionVisible, setTestSectionVisibility] = useState(true);
 
   async function sendCodeHandler() {
     await client.connect(); // Connecting to the server
@@ -181,25 +180,6 @@ const MainPage: FC = memo(() => {
               onChange={inputChangeHandler}
             />
             <Button onClick={clientStartHandler}>Send code</Button>
-          </Section>
-        )}
-        {isTestSectionVisible && (
-          <Section label="Test">
-            <Button
-              style={{
-                width: '10px',
-                padding: '3px 15px 3px 9px',
-                position: 'absolute',
-                top: '-13px',
-                right: '-13px',
-              }}
-              onClick={() => setTestSectionVisibility(prev => !prev)}>
-              x
-            </Button>
-            <Button onClick={getChatListHandler}>Get all chats</Button>
-            <Button onClick={checkUsernameHandler}>Check username</Button>
-            <Button onClick={getMessagesHandler}>Get messages</Button>
-            <Button onClick={getParticipantsHandler}>Get Participants</Button>
           </Section>
         )}
         <MessageList client={client} />

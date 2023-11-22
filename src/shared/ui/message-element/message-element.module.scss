@@ -5,6 +5,7 @@ $message-element-padding: 5px;
   padding: $message-element-padding;
   border-radius: var(--border-radius-message);
   transition: background-color 0.2s ease-in-out;
+  overflow: hidden;
 
   &::after {
     content: '';

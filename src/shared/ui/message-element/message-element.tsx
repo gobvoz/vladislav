@@ -2,20 +2,19 @@ import { memo } from 'react';
 
 import { classNames } from 'shared/libs/class-names';
 
-import { MessageReplay } from '../message-replay/message-replay';
-import { Message } from '../../model/types/message';
+import { Message } from '../../../entities/message/model/types/message';
 
 import cls from './message-element.module.scss';
 import { formatToTime } from 'shared/libs/format-to-time/format-to-time';
 
 interface Props {
   message: Message;
-  smoothScroll: (id: number) => void;
-  isCurrent: boolean;
+  isCurrent?: boolean;
+  children?: React.ReactNode;
 }
 
 const MessageElement = memo((props: Props) => {
-  const { message, smoothScroll, isCurrent } = props;
+  const { message, isCurrent, children } = props;
   const mods = {
     [cls.deleted]: message.isDeleted,
     [cls.current]: isCurrent,
@@ -27,7 +26,7 @@ const MessageElement = memo((props: Props) => {
         {message.userName}
         <span className={cls.userId}>(id:{message.userId})</span>
       </span>
-      {message.isReplay && <MessageReplay message={message} smoothScroll={smoothScroll} />}
+      {children}
       <span className={cls.messageText}>{message.text}</span>
       <p className={cls.time}>
         {message.updatedAt ? 'edited' : ''}

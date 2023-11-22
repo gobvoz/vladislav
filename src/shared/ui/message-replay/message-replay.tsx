@@ -1,13 +1,13 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 
-import { Message } from '../../model/types/message';
+import { Message } from '../../../entities/message/model/types/message';
 
 import cls from './message-replay.module.scss';
 import { classNames } from 'shared/libs/class-names';
 
 interface Props {
   message: Message;
-  smoothScroll: (id: number) => void;
+  smoothScroll?: (id: number) => void;
 }
 
 const MessageReplay = memo((props: Props) => {
@@ -17,10 +17,11 @@ const MessageReplay = memo((props: Props) => {
     [cls.deleted]: message.replayTo?.isDeleted,
   };
 
-  const onClickHandler = () => {
-    console.log('click');
+  const onClickHandler = useCallback(() => {
+    if (!smoothScroll) return;
+
     smoothScroll(message.replayTo?.id || 0);
-  };
+  }, [message]);
 
   if (message.replayTo) {
     return (
