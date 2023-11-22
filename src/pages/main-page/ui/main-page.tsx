@@ -12,6 +12,7 @@ import { Api } from 'telegram/tl';
 import { API_ID, API_HASH } from 'shared/constants/telegram.local';
 import { MessageList } from 'entities/message';
 import { Logo } from 'shared/ui/logo';
+import { DialogList } from 'entities/dialog';
 
 const SESSION = new StringSession(JSON.parse(localStorage.getItem('session') || '""')); //create a new StringSession, also you can use StoreSession
 const client = new TelegramClient(SESSION, API_ID, API_HASH, { connectionRetries: 5 }); // Immediately create a client using your application data
@@ -151,6 +152,7 @@ const MainPage: FC = memo(() => {
           }}>
           <Section>
             <Logo xSmall />
+            <DialogList client={client} />
           </Section>
         </div>
         <div

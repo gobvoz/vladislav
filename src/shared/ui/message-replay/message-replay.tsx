@@ -23,6 +23,8 @@ const MessageReplay = memo((props: Props) => {
     smoothScroll(message.replayTo?.id || 0);
   }, [message]);
 
+  if (!message.isReplay) return null;
+
   if (message.replayTo) {
     return (
       <div className={classNames(cls.replay, mods)} onClick={onClickHandler}>

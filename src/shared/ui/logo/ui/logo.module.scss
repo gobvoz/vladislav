@@ -3,6 +3,7 @@
   height: 100%;
   object-fit: cover;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .x-small {

@@ -3,11 +3,13 @@ import { AnyAction, EnhancedStore, Reducer, ReducersMapObject } from '@reduxjs/t
 import { AxiosInstance } from 'axios';
 
 import { MessageSchema } from 'entities/message';
+import { DialogSchema } from 'entities/dialog';
 
 export interface StateSchema {
   empty?: null;
   // async reducers
   message?: MessageSchema;
+  dialog?: DialogSchema;
 }
 
 export type StateSchemaKeys = keyof StateSchema;
