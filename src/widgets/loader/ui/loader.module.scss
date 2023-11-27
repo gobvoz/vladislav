@@ -4,12 +4,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--bg-main);
-  opacity: 0.9;
+  background: rgba(0 0 0 / 80%);
   z-index: var(--z-index-loader);
 }
 
 .substrate {
+  width: 200px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -17,7 +17,6 @@
   background-color: var(--bg-main);
   opacity: 0.8;
   border-radius: 50%;
-  z-index: var(--z-index-loader);
 }
 
 .loader {

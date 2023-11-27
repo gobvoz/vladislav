@@ -1,10 +1,12 @@
 import { createContext } from 'react';
-
-// import { Theme } from 'shared/constants/theme';
+import { TelegramClient } from 'telegram';
 
 export interface TelegramContextProps {
-  // theme?: Theme;
-  // setTheme?: (newTheme: Theme) => void;
+  client?: TelegramClient;
+  isLoading?: boolean;
+  isAuth?: boolean;
+  setLoading?: (loading: boolean) => void;
+  setAuth?: (auth: boolean) => void;
 }
 
 export const TelegramContext = createContext<TelegramContextProps>({});

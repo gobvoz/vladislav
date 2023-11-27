@@ -1,25 +1,27 @@
 import { useContext } from 'react';
+import { TelegramClient } from 'telegram';
 
-// import { Theme } from 'shared/constants/theme';
-// import { LOCAL_STORAGE_THEME_KEY } from 'shared/constants/local-storage-key';
-
-// import { ThemeContext } from './theme.context';
+import { TelegramContext } from './telegram.context';
 
 interface UseTelegramResult {
-  // theme: Theme;
-  // toggleTheme: () => void;
+  client: TelegramClient;
+  isLoading: boolean;
+  isAuth: boolean;
 }
 
 export const useTelegram = (): UseTelegramResult => {
-  //const { theme = Theme.DARK, setTheme } = useContext(TelegramContext);
+  const { client, isLoading, isAuth, setLoading, setAuth } = useContext(TelegramContext);
 
-  // const toggleTheme = () => {
-  //   const newTheme = theme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
+  const connect = async () => {
+    if (!client) return;
 
-  //   setTheme?.(newTheme);
-  //   localStorage.setItem(LOCAL_STORAGE_THEME_KEY, newTheme);
-  // };
+    await client.connect();
+  };
 
-  // return { theme, toggleTheme };
-  return {} as UseTelegramResult;
+  return {
+    client,
+    isLoading,
+    isAuth,
+    connect,
+  } as UseTelegramResult;
 };

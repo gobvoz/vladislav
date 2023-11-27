@@ -1,8 +1,9 @@
 import { memo, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { TelegramClient } from 'telegram';
 import { Dialog as TelegramDialog } from 'telegram/tl/custom/dialog';
 import { TotalList } from 'telegram/Helpers';
+
+import { useTelegram } from 'app/providers/telegram-provider/lib/use-telegram';
 
 import { useAppDispatch } from 'shared/hooks';
 import { DynamicModuleLoader } from 'shared/libs/dynamic-module-loader';
@@ -14,18 +15,15 @@ import { adoptDialogList } from '../../model/adapters/adopt-dialog-list';
 
 import cls from './dialog-list.module.scss';
 
-interface Props {
-  client: TelegramClient;
-}
-
 const reducerList = {
   dialog: dialogReducer,
 };
 
-const DialogList = memo(({ client }: Props) => {
+const DialogList = memo(() => {
   const dialogList = useSelector(getDialogList);
   const dispatch = useAppDispatch();
   const listRef = useRef<HTMLDivElement>(null);
+  const { client, isAuth } = useTelegram();
 
   const fetchDialogList = async () => {
     try {
@@ -39,10 +37,12 @@ const DialogList = memo(({ client }: Props) => {
   };
 
   useEffect(() => {
+    if (!isAuth) return;
+
     fetchDialogList().then(dialogList => {
       dispatch(dialogActions.setDialogList(adoptDialogList(dialogList)));
     });
-  }, [client]);
+  }, [client, isAuth]);
 
   return (
     <DynamicModuleLoader reducerList={reducerList}>

@@ -1,8 +1,10 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Api, TelegramClient } from 'telegram';
+import { Api } from 'telegram';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { DeletedMessage, DeletedMessageEvent } from 'telegram/events/DeletedMessage';
+
+import { useTelegram } from 'app/providers/telegram-provider/lib/use-telegram';
 
 import { Section } from 'shared/ui/section';
 import { useAppDispatch } from 'shared/hooks';
@@ -17,20 +19,18 @@ import cls from './message-list.module.scss';
 import { AnswerToMessage } from 'features/answer-to-message/ui/answer-to-message/answer-to-message';
 import { MessageReplay } from 'shared/ui/message-replay/message-replay';
 
-interface Props {
-  client: TelegramClient;
-}
-
 const reducerList = {
   message: messageReducer,
 };
 
-const MessageList = memo(({ client }: Props) => {
+const MessageList = memo(() => {
   const messageList = useSelector(getMessageList);
   const dispatch = useAppDispatch();
   const listRef = useRef<HTMLDivElement>(null);
   const [currentMessageId, setCurrentMessageId] = useState<number | null>(null);
   const [lastMessage, setLastMessage] = useState<Api.Message | null>(null);
+
+  const { client, isAuth } = useTelegram();
 
   const eventNewMessage = async (event: NewMessageEvent) => {
     console.log('New message', event.message);
@@ -61,6 +61,8 @@ const MessageList = memo(({ client }: Props) => {
   }, []);
 
   useEffect(() => {
+    if (!isAuth) return;
+
     client.connect().then(() => {
       client.getMe().then(me => {
         console.log('me is', me);
@@ -73,9 +75,10 @@ const MessageList = memo(({ client }: Props) => {
 
     return () => {
       client.removeEventHandler(eventNewMessage, new NewMessage({}));
+      client.removeEventHandler(eventPrevedMedved, new NewMessage({ pattern: /превед медвед/ }));
       client.removeEventHandler(eventDeletedMessage, new DeletedMessage({}));
     };
-  }, []);
+  }, [isAuth]);
 
   useEffect(() => {
     if (listRef.current) {

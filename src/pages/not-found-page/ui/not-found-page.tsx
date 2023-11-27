@@ -1,17 +1,15 @@
 import { FC, memo } from 'react';
 
-import { classNames } from 'shared/libs/class-names';
-
 import cls from './not-found-page.module.scss';
+import { Logo } from 'shared/ui/logo';
 
-interface Props {
-  className?: string;
-}
-
-const NotFoundPage: FC<Props> = memo((props: Props) => {
-  const { className } = props;
-
-  return <h1 className={classNames(cls.notFoundPage, className)}>Page not found</h1>;
+const NotFoundPage: FC = memo(() => {
+  return (
+    <div className={cls.notFoundPage}>
+      <Logo className={cls.logo} xLarge />
+      <h1>Page not found</h1>
+    </div>
+  );
 });
 
 export { NotFoundPage };
