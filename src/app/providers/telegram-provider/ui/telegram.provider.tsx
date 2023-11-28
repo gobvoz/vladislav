@@ -18,6 +18,7 @@ export const TelegramProvider = ({ children }: Props) => {
   const [client, setClient] = useState<TelegramClient>();
   const [isLoading, setLoading] = useState<boolean>(true);
   const [isAuth, setAuth] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const localStorageSession = localStorage.getItem(LOCAL_STORAGE_TELEGRAM_SESSION);
@@ -29,16 +30,18 @@ export const TelegramProvider = ({ children }: Props) => {
     const apiHash = LocalStorageApiHash || '';
 
     let client: TelegramClient;
-
     try {
       client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
-      console.log(client);
-      client.connect().then(() => {
-        setLoading(false);
-        setAuth(true);
-      });
 
-      setClient(client);
+      client.connect().then(() => {
+        setClient(client);
+        localStorage.setItem(LOCAL_STORAGE_TELEGRAM_SESSION, JSON.stringify(client.session.save()));
+
+        client.checkAuthorization().then(result => {
+          if (result) setAuth(true);
+          setLoading(false);
+        });
+      });
     } catch (error) {
       console.dir(error);
 
@@ -48,7 +51,17 @@ export const TelegramProvider = ({ children }: Props) => {
   }, []);
 
   return (
-    <TelegramContext.Provider value={{ client, isLoading, isAuth, setLoading, setAuth }}>
+    <TelegramContext.Provider
+      value={{
+        client,
+        isLoading,
+        isAuth,
+        error,
+        setLoading,
+        setAuth,
+        setClient,
+        setError,
+      }}>
       {children}
     </TelegramContext.Provider>
   );

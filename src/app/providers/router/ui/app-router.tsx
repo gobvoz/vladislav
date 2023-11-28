@@ -5,9 +5,11 @@ import { PageLoader } from 'widgets/page-loader';
 
 import { AppRouteProps, routerConfig } from '../config/route-config';
 
+import { RequireAuth } from './require-auth';
+
 const AppRouter = memo(() => {
-  const renderWithAuth = useCallback(({ path, element }: AppRouteProps) => {
-    return <Route key={path} path={path} element={element} />;
+  const renderWithAuth = useCallback(({ path, element, authOnly }: AppRouteProps) => {
+    return <Route key={path} path={path} element={authOnly ? <RequireAuth>{element}</RequireAuth> : element} />;
   }, []);
 
   return (
