@@ -30,6 +30,26 @@ const messageSlice = createSlice({
       }
       state.list.push(message);
     },
+    setMessageList: (state, action: PayloadAction<Message[]>) => {
+      const messages = action.payload;
+
+      messages.forEach(message => {
+        if (message.isReplay && message.replayTo?.id) {
+          const replayTo = state.list.find(item => item.id === message.replayTo?.id);
+
+          if (replayTo) {
+            message.replayTo.text = replayTo.text;
+            message.replayTo.userName = replayTo.userName;
+          } else {
+            message.replayTo = undefined;
+          }
+
+          message.replayTo = replayTo;
+        }
+      });
+
+      state.list = messages;
+    },
     markDeleted: (state, action: PayloadAction<number[]>) => {
       const ids = action.payload;
       state.list.forEach(item => {
@@ -41,6 +61,7 @@ const messageSlice = createSlice({
         }
       });
     },
+    clear: () => initialState,
   },
 });
 

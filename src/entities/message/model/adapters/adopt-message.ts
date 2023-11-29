@@ -26,3 +26,7 @@ export const adoptMessage = (message: Api.Message): Message => {
 
   return adoptedMessage;
 };
+
+export const adoptMessageList = (messages: Api.Message[]): Message[] => {
+  return messages.map(adoptMessage).sort((a, b) => a.createdAt - b.createdAt);
+};

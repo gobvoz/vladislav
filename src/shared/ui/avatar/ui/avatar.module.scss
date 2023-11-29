@@ -1,0 +1,30 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.avatar {
+  padding: 2px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+
+  &.small {
+    padding: 1px;
+    width: var(--avatar-size-small);
+    height: var(--avatar-size-small);
+  }
+
+  &.medium {
+    padding: 2px;
+    width: var(--avatar-size-medium);
+    height: var(--avatar-size-medium);
+  }
+
+  &.large {
+    padding: 2px;
+    width: var(--avatar-size-large);
+    height: var(--avatar-size-large);
+  }
+}

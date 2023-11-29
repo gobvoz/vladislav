@@ -8,6 +8,7 @@ const initialState: DialogSchema = {
   error: undefined,
 
   list: [],
+  active: undefined,
 };
 
 const dialogSlice = createSlice({
@@ -16,6 +17,9 @@ const dialogSlice = createSlice({
   reducers: {
     setDialogList: (state, action: PayloadAction<Dialog[]>) => {
       state.list = action.payload;
+    },
+    setActiveDialog: (state, action: PayloadAction<Dialog>) => {
+      state.active = action.payload;
     },
   },
 });

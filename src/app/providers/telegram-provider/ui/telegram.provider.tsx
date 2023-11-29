@@ -31,7 +31,10 @@ export const TelegramProvider = ({ children }: Props) => {
 
     let client: TelegramClient;
     try {
-      client = new TelegramClient(session, apiId, apiHash, { connectionRetries: 5 });
+      client = new TelegramClient(session, apiId, apiHash, {
+        connectionRetries: 5,
+        maxConcurrentDownloads: 1,
+      });
 
       client.connect().then(() => {
         setClient(client);

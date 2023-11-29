@@ -9,18 +9,35 @@ import { useAppDispatch } from 'shared/hooks';
 import { DynamicModuleLoader } from 'shared/libs/dynamic-module-loader';
 import { DialogElement } from 'shared/ui/dialog-element';
 
-import { getDialogList } from '../../model/selectors/dialog-selectors';
+import { getActiveDialog, getDialogList } from '../../model/selectors/dialog-selectors';
 import { dialogActions, dialogReducer } from '../../model/slice/dialog-slice';
 import { adoptDialogList } from '../../model/adapters/adopt-dialog-list';
 
 import cls from './dialog-list.module.scss';
+import { Dialog } from '../../model/types/dialog';
 
 const reducerList = {
   dialog: dialogReducer,
 };
 
+const defaultDialog: Dialog = {
+  id: '0',
+  title: 'All dialogs',
+  message: '',
+
+  isArchived: false,
+  isChannel: false,
+  isGroup: false,
+  isUser: false,
+  isPinned: false,
+
+  unreadCount: 0,
+  unreadMentionsCount: 0,
+};
+
 const DialogList = memo(() => {
   const dialogList = useSelector(getDialogList);
+  const activeDialog = useSelector(getActiveDialog);
   const dispatch = useAppDispatch();
   const listRef = useRef<HTMLDivElement>(null);
   const { client, isAuth } = useTelegram();
@@ -36,11 +53,20 @@ const DialogList = memo(() => {
     return [] as TotalList<TelegramDialog>;
   };
 
+  const setActiveDialog = (dialog: Dialog) => {
+    dispatch(dialogActions.setActiveDialog(dialog));
+  };
+
+  useEffect(() => {
+    setActiveDialog(defaultDialog);
+  }, []);
+
   useEffect(() => {
     if (!isAuth) return;
 
     fetchDialogList().then(dialogList => {
-      dispatch(dialogActions.setDialogList(adoptDialogList(dialogList)));
+      console.log(dialogList);
+      dispatch(dialogActions.setDialogList([defaultDialog, ...adoptDialogList(dialogList)]));
     });
   }, [client, isAuth]);
 
@@ -48,7 +74,12 @@ const DialogList = memo(() => {
     <DynamicModuleLoader reducerList={reducerList}>
       <div className={cls.wrapper} ref={listRef}>
         {dialogList.map(dialog => (
-          <DialogElement key={dialog.id} dialog={dialog} />
+          <DialogElement
+            key={dialog.id}
+            dialog={dialog}
+            active={dialog === activeDialog}
+            onClick={setActiveDialog}
+          />
         ))}
       </div>
     </DynamicModuleLoader>

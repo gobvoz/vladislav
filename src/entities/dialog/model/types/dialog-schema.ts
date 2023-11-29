@@ -5,4 +5,5 @@ export interface DialogSchema {
   error: unknown | undefined;
 
   list: Dialog[];
+  active: Dialog | undefined;
 }

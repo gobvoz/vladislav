@@ -13,6 +13,15 @@
   --color-time: #ffffff50;
   --color-context: peru;
 
+  // peer colors
+  --color-peer-0: #ed636a; // hsl(357, 65%, 66%)
+  --color-peer-1: #ffa770; // hsl(023, 93%, 72%)
+  --color-peer-2: #a18cf2; // hsl(252, 63%, 75%)
+  --color-peer-3: #6ce345; // hsl(105, 48%, 58%)
+  --color-peer-4: #52e3e5; // hsl(181, 47%, 61%)
+  --color-peer-5: #54abed; // hsl(206, 64%, 63%)
+  --color-peer-6: #f773ae; // hsl(333, 77%, 71%)
+
   // scrollbar
   --color-scrollbar: #80808050;
   --color-scrollbar-hover: #808080ff;
@@ -30,12 +39,14 @@
   --bg-button-primary: linear-gradient(45deg, #ff1a6a 0%, #47cbff 100%);
   --bg-button-danger: #ff1a6a;
   --bg-sidebar: #343a5a;
+  --bg-dialog: #c0c0c055;
   --bg-message-replay: #c0c0c015;
   --bg-color-deleted: #ff1a6a40;
   --bg-color-current-animation: #ffffff40;
 
   // pseudo classes
   --hover-bg-button-default: #3e4658;
+  --hover-bg-dialog: #c0c0c035;
 
   // toggler
   --bg-toggler-moon: #f5f5f5;

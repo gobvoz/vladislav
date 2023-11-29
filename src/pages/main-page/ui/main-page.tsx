@@ -7,6 +7,7 @@ import { MessageList } from 'entities/message';
 import { DialogList } from 'entities/dialog';
 
 import { Logo } from 'shared/ui/logo';
+import { MessageWatcher } from 'widgets/message-watcher';
 
 const MainPage: FC = memo(() => {
   return (
@@ -41,7 +42,9 @@ const MainPage: FC = memo(() => {
             maxWidth: '700px',
             margin: '0 auto',
           }}>
-          <MessageList />
+          <MessageWatcher>
+            <MessageList />
+          </MessageWatcher>
         </div>
       </div>
     </PageWrapper>

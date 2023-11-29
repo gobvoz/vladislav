@@ -38,7 +38,10 @@ export const useTelegram = (): UseTelegramResult => {
     let client: TelegramClient;
 
     try {
-      client = new TelegramClient(session, Number(apiId), apiHash, { connectionRetries: 5 });
+      client = new TelegramClient(session, Number(apiId), apiHash, {
+        connectionRetries: 5,
+        maxConcurrentDownloads: 1,
+      });
 
       await client.connect();
       const result = await client.checkAuthorization();
