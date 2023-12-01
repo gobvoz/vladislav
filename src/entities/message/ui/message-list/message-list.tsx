@@ -73,7 +73,9 @@ const MessageList = memo(() => {
               key={message.id}
               message={message}
               isCurrent={message.id === currentMessageId}>
-              <MessageReplay message={message} smoothScroll={smoothScrollToMessage} />
+              {message.isReplay && (
+                <MessageReplay message={message} smoothScroll={smoothScrollToMessage} />
+              )}
             </MessageElement>
           ))}
         </div>

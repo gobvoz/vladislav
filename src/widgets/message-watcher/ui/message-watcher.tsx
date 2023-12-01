@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 import { NewMessage, NewMessageEvent } from 'telegram/events';
 import { DeletedMessage, DeletedMessageEvent } from 'telegram/events/DeletedMessage';
 
@@ -10,6 +10,7 @@ import { adoptMessage, adoptMessageList } from 'entities/message/model/adapters/
 import { useAppDispatch } from 'shared/hooks';
 import { useSelector } from 'react-redux';
 import { getActiveDialog } from 'entities/dialog/model/selectors/dialog-selectors';
+import { dialogActions } from 'entities/dialog';
 
 interface Props {
   children: React.ReactNode;
@@ -60,21 +61,30 @@ const MessageWatcher = memo((props: Props) => {
 
     if (!activeDialog) return;
 
+    const adoptedMessage = adoptMessage(event.message);
+    const dialogUpdate = {
+      id: (peer.channelId || peer.chatId || peer.userId || '').toString(),
+      message: adoptedMessage.text,
+      date: adoptedMessage.createdAt,
+    };
+
+    dispatch(dialogActions.updateDialog(dialogUpdate));
+
     if (activeDialog.id === '0') {
-      dispatch(messageActions.setMessage(adoptMessage(event.message)));
+      dispatch(messageActions.setMessage(adoptedMessage));
       return;
     }
 
     if ((peer.channelId || '').toString() === activeDialog.id) {
-      dispatch(messageActions.setMessage(adoptMessage(event.message)));
+      dispatch(messageActions.setMessage(adoptedMessage));
     }
 
     if ((peer.userId || '').toString() === activeDialog.id) {
-      dispatch(messageActions.setMessage(adoptMessage(event.message)));
+      dispatch(messageActions.setMessage(adoptedMessage));
     }
 
     if ((peer.chatId || '').toString() === activeDialog.id) {
-      dispatch(messageActions.setMessage(adoptMessage(event.message)));
+      dispatch(messageActions.setMessage(adoptedMessage));
     }
   };
 

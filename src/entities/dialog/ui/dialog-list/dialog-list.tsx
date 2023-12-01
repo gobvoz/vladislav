@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Dialog as TelegramDialog } from 'telegram/tl/custom/dialog';
 import { TotalList } from 'telegram/Helpers';
@@ -24,12 +24,13 @@ const defaultDialog: Dialog = {
   id: '0',
   title: 'All dialogs',
   message: '',
+  date: 0,
 
   isArchived: false,
   isChannel: false,
   isGroup: false,
   isUser: false,
-  isPinned: false,
+  isPinned: true,
 
   unreadCount: 0,
   unreadMentionsCount: 0,
@@ -42,7 +43,7 @@ const DialogList = memo(() => {
   const listRef = useRef<HTMLDivElement>(null);
   const { client, isAuth } = useTelegram();
 
-  const fetchDialogList = async () => {
+  const fetchDialogList = useCallback(async () => {
     try {
       await client.connect();
       const dialogList = await client.getDialogs();
@@ -51,11 +52,11 @@ const DialogList = memo(() => {
       console.dir(error);
     }
     return [] as TotalList<TelegramDialog>;
-  };
+  }, [client]);
 
-  const setActiveDialog = (dialog: Dialog) => {
+  const setActiveDialog = useCallback((dialog: Dialog) => {
     dispatch(dialogActions.setActiveDialog(dialog));
-  };
+  }, []);
 
   useEffect(() => {
     setActiveDialog(defaultDialog);

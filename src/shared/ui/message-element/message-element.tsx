@@ -26,7 +26,7 @@ const MessageElement = memo((props: Props) => {
         {message.userName}
         <span className={cls.userId}>(id:{message.userId})</span>
       </span>
-      {children}
+      {children ? children : null}
       <span className={cls.messageText}>{message.text}</span>
       <p className={cls.time}>
         {message.updatedAt ? 'edited' : ''}
