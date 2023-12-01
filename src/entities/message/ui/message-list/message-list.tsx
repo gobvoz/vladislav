@@ -9,6 +9,7 @@ import { getMessageList } from '../../model/selectors/message-selectors';
 import { messageReducer } from '../../model/slice/message-slice';
 
 import { MessageElement } from 'shared/ui/message-element/message-element';
+import { Button } from 'shared/ui/button';
 
 import cls from './message-list.module.scss';
 
@@ -21,12 +22,15 @@ const MessageList = memo(() => {
 
   const listRef = useRef<HTMLDivElement>(null);
   const [currentMessageId, setCurrentMessageId] = useState<number | null>(null);
+  const [isScrollToBottomVisible, setScrollToBottomVisible] = useState(false);
+  const [isAutoScroll, setAutoScroll] = useState(true);
 
   const smoothScrollToMessage = useCallback((id: number) => {
     if (listRef.current) {
       const message = listRef.current.querySelector(`#m${id}`);
       if (message) {
         message.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
         setCurrentMessageId(id);
         setTimeout(() => {
           setCurrentMessageId(null);
@@ -35,19 +39,35 @@ const MessageList = memo(() => {
     }
   }, []);
 
-  useEffect(() => {
+  const scrollHandler = useCallback(() => {
     if (listRef.current) {
-      listRef.current.scrollBy({
+      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+      const isScrollToBottomVisible = scrollTop + clientHeight < scrollHeight - 10;
+
+      setScrollToBottomVisible(isScrollToBottomVisible);
+      setAutoScroll(!isScrollToBottomVisible);
+    }
+  }, []);
+
+  const scrollToBottomHandler = useCallback(() => {
+    if (listRef.current) {
+      listRef.current.scrollTo({
         top: listRef.current.scrollHeight,
         behavior: 'smooth',
       });
+
+      setAutoScroll(true);
     }
+  }, []);
+
+  useEffect(() => {
+    if (isAutoScroll) scrollToBottomHandler();
   }, [messageList]);
 
   return (
     <DynamicModuleLoader reducerList={reducerList}>
       <Section label={`Messages (${messageList.length})`}>
-        <div className={cls.wrapper} ref={listRef}>
+        <div className={cls.wrapper} ref={listRef} onScroll={scrollHandler}>
           {messageList.map(message => (
             <MessageElement
               key={message.id}
@@ -57,6 +77,9 @@ const MessageList = memo(() => {
             </MessageElement>
           ))}
         </div>
+        {isScrollToBottomVisible && (
+          <Button className={cls.toBottom} onClick={scrollToBottomHandler} />
+        )}
       </Section>
 
       {/* <AnswerToMessage message={lastMessage} /> */}
