@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  position: relative;
+  bottom: -1px;
+  padding: 0 10px;
+  border-bottom: 1px solid transparent;
+  cursor: default;
+  z-index: 1;
+}
+
+.border {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tab {
+  font-weight: 700;
+  position: relative;
+  bottom: -1px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.active {
+  background-color: var(--bg-section);
+  border: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--bg-section);
+  border-radius: 5px 5px 0 0;
+}
