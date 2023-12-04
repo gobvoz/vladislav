@@ -35,7 +35,7 @@ const messageSlice = createSlice({
 
       messages.forEach(message => {
         if (message.isReplay && message.replayTo?.id) {
-          const replayTo = state.list.find(item => item.id === message.replayTo?.id);
+          const replayTo = messages.find(item => item.id === message.replayTo?.id);
 
           if (replayTo) {
             message.replayTo.text = replayTo.text;

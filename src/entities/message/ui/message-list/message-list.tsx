@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Section } from 'shared/ui/section';
@@ -9,9 +9,7 @@ import { getMessageList } from '../../model/selectors/message-selectors';
 import { messageReducer } from '../../model/slice/message-slice';
 
 import { MessageElement } from 'shared/ui/message-element/message-element';
-import { Button } from 'shared/ui/button';
-
-import cls from './message-list.module.scss';
+import { ScrollToBottom } from 'shared/ui/scroll-to-bottom';
 
 const reducerList = {
   message: messageReducer,
@@ -22,8 +20,6 @@ const MessageList = memo(() => {
 
   const listRef = useRef<HTMLDivElement>(null);
   const [currentMessageId, setCurrentMessageId] = useState<number | null>(null);
-  const [isScrollToBottomVisible, setScrollToBottomVisible] = useState(false);
-  const [isAutoScroll, setAutoScroll] = useState(true);
 
   const smoothScrollToMessage = useCallback((id: number) => {
     if (listRef.current) {
@@ -39,35 +35,10 @@ const MessageList = memo(() => {
     }
   }, []);
 
-  const scrollHandler = useCallback(() => {
-    if (listRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
-      const isScrollToBottomVisible = scrollTop + clientHeight < scrollHeight - 10;
-
-      setScrollToBottomVisible(isScrollToBottomVisible);
-      setAutoScroll(!isScrollToBottomVisible);
-    }
-  }, []);
-
-  const scrollToBottomHandler = useCallback(() => {
-    if (listRef.current) {
-      listRef.current.scrollTo({
-        top: listRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
-
-      setAutoScroll(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isAutoScroll) scrollToBottomHandler();
-  }, [messageList]);
-
   return (
     <DynamicModuleLoader reducerList={reducerList}>
       <Section label={`Messages (${messageList.length})`}>
-        <div className={cls.wrapper} ref={listRef} onScroll={scrollHandler}>
+        <ScrollToBottom dependency={messageList}>
           {messageList.map(message => (
             <MessageElement
               key={message.id}
@@ -78,10 +49,7 @@ const MessageList = memo(() => {
               )}
             </MessageElement>
           ))}
-        </div>
-        {isScrollToBottomVisible && (
-          <Button className={cls.toBottom} onClick={scrollToBottomHandler} />
-        )}
+        </ScrollToBottom>
       </Section>
 
       {/* <AnswerToMessage message={lastMessage} /> */}
