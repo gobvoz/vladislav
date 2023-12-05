@@ -78,7 +78,7 @@ const DialogList = memo(() => {
           <DialogElement
             key={dialog.id}
             dialog={dialog}
-            active={dialog === activeDialog}
+            active={dialog.id === activeDialog?.id}
             onClick={setActiveDialog}
           />
         ))}

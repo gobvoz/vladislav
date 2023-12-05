@@ -8,6 +8,7 @@ import { DialogList } from 'entities/dialog';
 
 import { Logo } from 'shared/ui/logo';
 import { MessageWatcher } from 'widgets/message-watcher';
+import { UserSearch } from 'entities/user-search';
 
 const MainPage: FC = memo(() => {
   return (
@@ -29,6 +30,7 @@ const MainPage: FC = memo(() => {
           }}>
           <Section>
             <Logo xSmall />
+            <UserSearch />
             <DialogList />
           </Section>
         </div>

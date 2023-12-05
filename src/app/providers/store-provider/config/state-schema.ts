@@ -4,12 +4,14 @@ import { AxiosInstance } from 'axios';
 
 import { MessageSchema } from 'entities/message';
 import { DialogSchema } from 'entities/dialog';
+import { UserSearchSchema } from 'entities/user-search';
 
 export interface StateSchema {
   empty?: null;
   // async reducers
   message?: MessageSchema;
   dialog?: DialogSchema;
+  userSearch?: UserSearchSchema;
 }
 
 export type StateSchemaKeys = keyof StateSchema;

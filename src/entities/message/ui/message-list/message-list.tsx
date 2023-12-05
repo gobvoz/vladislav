@@ -17,14 +17,7 @@ const reducerList = {
   message: messageReducer,
 };
 
-const tabList = [
-  { id: '1', name: 'All messages' },
-  { id: '2', name: 'First' },
-  { id: '3', name: 'Second' },
-  { id: '4', name: 'Third' },
-  { id: '5', name: 'Forth' },
-  { id: '6', name: 'Fifth' },
-];
+const tabList = [{ id: '0', name: 'All messages' }];
 
 const MessageList = memo(() => {
   const messageList = useSelector(getMessageList);
