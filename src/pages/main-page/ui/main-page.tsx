@@ -3,12 +3,13 @@ import { Section } from 'shared/ui/section';
 
 import { PageWrapper } from 'widgets/page-wrapper';
 
-import { MessageList } from 'entities/message';
 import { DialogList } from 'entities/dialog';
 
 import { Logo } from 'shared/ui/logo';
+
 import { MessageWatcher } from 'widgets/message-watcher';
-import { UserSearch } from 'entities/user-search';
+
+import { MessageWidget } from 'widgets/message-widget/message-widget';
 
 const MainPage: FC = memo(() => {
   return (
@@ -30,7 +31,6 @@ const MainPage: FC = memo(() => {
           }}>
           <Section>
             <Logo xSmall />
-            <UserSearch />
             <DialogList />
           </Section>
         </div>
@@ -45,7 +45,7 @@ const MainPage: FC = memo(() => {
             margin: '0 auto',
           }}>
           <MessageWatcher>
-            <MessageList />
+            <MessageWidget />
           </MessageWatcher>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { AxiosInstance } from 'axios';
 import { MessageSchema } from 'entities/message';
 import { DialogSchema } from 'entities/dialog';
 import { UserSearchSchema } from 'entities/user-search';
+import { WatchDogSchema } from 'entities/watch-dog';
 
 export interface StateSchema {
   empty?: null;
@@ -12,6 +13,7 @@ export interface StateSchema {
   message?: MessageSchema;
   dialog?: DialogSchema;
   userSearch?: UserSearchSchema;
+  watchDog?: WatchDogSchema;
 }
 
 export type StateSchemaKeys = keyof StateSchema;

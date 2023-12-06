@@ -1,6 +1,5 @@
-import { memo, useCallback, useEffect } from 'react';
+import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { Dialog as TelegramDialog } from 'telegram/tl/custom/dialog';
 
 import { useTelegram } from 'app/providers/telegram-provider/lib/use-telegram';
 
@@ -27,7 +26,7 @@ const UserSearch = memo(() => {
   const activeDialog = useSelector(getActiveDialog);
 
   const dispatch = useAppDispatch();
-  const { client, isAuth } = useTelegram();
+  const { client } = useTelegram();
 
   const fetchUserList = useCallback(
     async (queryString: string) => {
@@ -75,7 +74,8 @@ const UserSearch = memo(() => {
         ?.getAttribute('data-user');
 
       if (userId) {
-        //dispatch(userSearchActions.setUser(userId));
+        dispatch(userSearchActions.setQuery(''));
+        dispatch(userSearchActions.setList([]));
       }
     },
     [dispatch],
@@ -90,15 +90,17 @@ const UserSearch = memo(() => {
           onChange={searchHandle}
           placeholder="Search user ..."
         />
-        <div className={cls.userList} onClick={userClickHandler}>
-          {userList.map(user => (
-            <div key={user.id} className={cls.user} data-user={user.id}>
-              <span>{[user.firstName, user.lastName].filter(Boolean).join(' ')}</span>
-              <span style={{ color: 'var(--color-secondary-text)' }}> (id:{user.id})</span>
-              <span> {user.username}</span>
-            </div>
-          ))}
-        </div>
+        {userList.length > 0 && (
+          <div className={cls.userList} onClick={userClickHandler}>
+            {userList.map(user => (
+              <div key={user.id} className={cls.user} data-user={user.id}>
+                <span>{[user.firstName, user.lastName].filter(Boolean).join(' ')}</span>
+                <span style={{ color: 'var(--color-secondary-text)' }}> (id:{user.id})</span>
+                <span> {user.username ? '@' + user.username : ''}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </DynamicModuleLoader>
   );
