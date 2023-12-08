@@ -6,20 +6,21 @@ import cls from './scroll-to-bottom.module.scss';
 
 interface Props {
   children: React.ReactNode;
+  listRef?: React.RefObject<HTMLDivElement>;
 
   dependency?: unknown;
 }
 
 const ScrollToBottom = memo((props: Props) => {
-  const { children, dependency } = props;
+  const { children, dependency, listRef } = props;
 
-  const listRef = useRef<HTMLDivElement>(null);
+  //const listRef = useRef<HTMLDivElement>(null);
 
   const [isScrollToBottomVisible, setScrollToBottomVisible] = useState(false);
   const [isAutoScroll, setAutoScroll] = useState(true);
 
   const scrollHandler = useCallback(() => {
-    if (listRef.current) {
+    if (listRef?.current) {
       const { scrollTop, scrollHeight, clientHeight } = listRef.current;
       const isScrollToBottomVisible = scrollTop + clientHeight < scrollHeight - 10;
 
@@ -29,7 +30,7 @@ const ScrollToBottom = memo((props: Props) => {
   }, []);
 
   const scrollToBottomHandler = useCallback(() => {
-    if (listRef.current) {
+    if (listRef?.current) {
       listRef.current.scrollTo({
         top: listRef.current.scrollHeight,
         behavior: 'smooth',

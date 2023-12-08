@@ -38,7 +38,7 @@ const MessageList = memo((props: Props) => {
 
   return (
     <section className={classNames(cls.wrapper, className)}>
-      <ScrollToBottom dependency={messageList}>
+      <ScrollToBottom dependency={messageList} listRef={listRef}>
         {messageList.map(message => (
           <MessageElement
             key={message.id}
