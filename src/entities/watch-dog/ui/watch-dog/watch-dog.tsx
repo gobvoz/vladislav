@@ -1,20 +1,19 @@
 import { memo, useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { SelectDialogs } from 'features/select-dialogs';
+import { SelectUsers } from 'features/select-users';
+
 import { Section } from 'shared/ui/section';
 import { MessageReplay } from 'shared/ui/message-replay/message-replay';
-
-import {
-  getWatchDogActive,
-  getWatchDogChannel,
-  getWatchDogMessages,
-  getWatchDogUser,
-} from '../../model/selectors/watch-dog-selectors';
-
 import { MessageElement } from 'shared/ui/message-element/message-element';
 import { ScrollToBottom } from 'shared/ui/scroll-to-bottom';
-import { UserSearch } from 'entities/user-search';
 import { Button } from 'shared/ui/button';
+import { classNames } from 'shared/libs/class-names';
+
+import { getWatchDogActive, getWatchDogMessages } from '../../model/selectors/watch-dog-selectors';
+
+import cls from './watch-dog.module.scss';
 
 interface Props {
   className?: string;
@@ -24,8 +23,6 @@ const WatchDog = memo((props: Props) => {
   const { className } = props;
 
   const watchDogList = useSelector(getWatchDogMessages);
-  const watchDogUser = useSelector(getWatchDogUser);
-  const watchDogChannel = useSelector(getWatchDogChannel);
   const isWatchDogActive = useSelector(getWatchDogActive);
 
   const listRef = useRef<HTMLDivElement>(null);
@@ -46,13 +43,13 @@ const WatchDog = memo((props: Props) => {
   }, []);
 
   return (
-    <section className={className}>
-      <UserSearch />
-      <Section label="Watch Dog">
-        <p>channel: {watchDogChannel?.title}</p>
-        <p>user: {watchDogUser?.firstName}</p>
-        <Button>{isWatchDogActive ? 'Pause' : 'Start'}</Button>
-      </Section>
+    <section className={classNames(cls.wrapper, className)}>
+      <SelectDialogs />
+      <SelectUsers />
+      <Button>{isWatchDogActive ? 'Pause' : 'Start'}</Button>
+
+      <Section label="Watch Dog"></Section>
+
       <ScrollToBottom dependency={watchDogList}>
         {watchDogList.map(message => (
           <MessageElement
