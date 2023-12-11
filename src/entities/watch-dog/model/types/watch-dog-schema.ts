@@ -1,14 +1,14 @@
-import { User } from 'entities/user-search';
-import { Message } from './message';
 import { Dialog } from 'entities/dialog';
+import { User } from 'entities/user';
+import { WatchDog } from './watch-dog';
 
 export interface WatchDogSchema {
   isLoading: boolean;
   error: unknown | undefined;
 
-  isWatch: boolean;
+  selectedChannels: Dialog[];
+  selectedUsers: User[];
 
-  user: User | null;
-  channel: Dialog | null;
-  list: Message[];
+  list: WatchDog[];
+  maxId: number;
 }

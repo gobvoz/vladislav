@@ -3,8 +3,10 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from 'shared/ui/button';
 
 import cls from './scroll-to-bottom.module.scss';
+import { classNames } from 'shared/libs/class-names';
 
 interface Props {
+  className?: string;
   children: React.ReactNode;
   listRef?: React.RefObject<HTMLDivElement>;
 
@@ -12,7 +14,7 @@ interface Props {
 }
 
 const ScrollToBottom = memo((props: Props) => {
-  const { children, dependency, listRef } = props;
+  const { className, children, dependency, listRef } = props;
 
   //const listRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +47,7 @@ const ScrollToBottom = memo((props: Props) => {
   }, [dependency]);
 
   return (
-    <div className={cls.wrapper} ref={listRef} onScroll={scrollHandler}>
+    <div className={classNames(cls.wrapper, className)} ref={listRef} onScroll={scrollHandler}>
       {children}
       {isScrollToBottomVisible && (
         <Button className={cls.toBottom} onClick={scrollToBottomHandler} />

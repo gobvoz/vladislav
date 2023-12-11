@@ -9,32 +9,19 @@ import { getActiveDialog } from 'entities/dialog';
 import { MultiListSelect } from 'shared/ui/multi-list-select/ui/multi-list-select';
 
 import { WATCH_DOG_SELECTED_USER_LIST } from 'shared/constants/local-storage-key';
-
-type Element = { id: string; name: string };
-type List = Array<Element>;
+import { User, adoptUser, adoptUserList } from 'entities/user';
+import { getWatchDogSelectedUsers, watchDogActions } from 'entities/watch-dog';
+import { useAppDispatch } from 'shared/hooks';
 
 const SelectUsers = memo(() => {
-  const [selectedUserList, setSelectedUserList] = useState<List>([]);
-  const [foundUserList, setFoundUserList] = useState<List>([]);
+  const dispatch = useAppDispatch();
+  const { setSelectedUsers } = watchDogActions;
+
+  const [foundUserList, setFoundUserList] = useState<User[]>([]);
 
   const { client } = useTelegram();
   const activeDialog = useSelector(getActiveDialog);
-
-  const adoptUser = useCallback((user: any): Element => {
-    const adoptedUser = {
-      id: user.id.toString(),
-      name: [
-        user.firstName,
-        user.lastName,
-        '(id:',
-        user.id,
-        ')',
-        user.username ? `@${user.username}` : '',
-      ].join(' '),
-    };
-
-    return adoptedUser;
-  }, []);
+  const selectedUsers = useSelector(getWatchDogSelectedUsers);
 
   const fetchUserList = useCallback(
     async (queryString: string) => {
@@ -53,7 +40,7 @@ const SelectUsers = memo(() => {
             userList.push(adoptUser(participant));
           }
 
-          return userList;
+          return userList as User[];
         } catch (error) {
           console.dir(error);
         }
@@ -71,7 +58,7 @@ const SelectUsers = memo(() => {
 
       const result = await fetchUserList(searchString);
 
-      if (result) setFoundUserList(result);
+      if (result) setFoundUserList(adoptUserList(result));
       else setFoundUserList([]);
     },
     [activeDialog],
@@ -80,17 +67,19 @@ const SelectUsers = memo(() => {
   useEffect(() => {
     const selectedUserList = JSON.parse(localStorage.getItem(WATCH_DOG_SELECTED_USER_LIST) || '[]');
 
-    setSelectedUserList(selectedUserList);
+    setTimeout(() => {
+      dispatch(setSelectedUsers(selectedUserList));
+    });
   }, []);
 
-  const onSelectedUserListChange = useCallback((userList: List) => {
-    setSelectedUserList(userList);
+  const onSelectedUserListChange = useCallback((userList: any) => {
+    dispatch(setSelectedUsers(userList));
     localStorage.setItem(WATCH_DOG_SELECTED_USER_LIST, JSON.stringify(userList));
   }, []);
 
   return (
     <MultiListSelect
-      currentList={selectedUserList}
+      currentList={selectedUsers}
       foundList={foundUserList}
       getListBySearch={getUserListBySearch}
       setSelectedElements={onSelectedUserListChange}

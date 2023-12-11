@@ -7,3 +7,4 @@ export const LOCAL_STORAGE_TELEGRAM_API_HASH = 'telegram-api-hash';
 
 export const WATCH_DOG_SELECTED_DIALOG_LIST = 'watch-dog-selected-dialog-list';
 export const WATCH_DOG_SELECTED_USER_LIST = 'watch-dog-selected-user-list';
+export const WATCH_DOG_LIST = 'watch-dog-list';

@@ -1,52 +1,57 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { WatchDogSchema } from '../types/watch-dog-schema';
-import { Message } from '../types/message';
-import { User } from 'entities/user-search';
+import { User } from 'entities/user';
 import { Dialog } from 'entities/dialog';
+import { WatchDog } from '../types/watch-dog';
 
 const initialState: WatchDogSchema = {
   isLoading: false,
   error: undefined,
 
-  isWatch: false,
+  selectedChannels: [],
+  selectedUsers: [],
 
-  user: null,
-  channel: null,
   list: [],
+  maxId: 0,
 };
 
 const watchDogSlice = createSlice({
   name: 'watchDog',
   initialState,
   reducers: {
-    setMessage: (state, action: PayloadAction<Message>) => {
-      const message = action.payload;
-      state.list.push(message);
+    setWatchDogList: (state, action: PayloadAction<WatchDog[]>) => {
+      const watchDogList: WatchDog[] = action.payload;
+
+      state.list = watchDogList;
+      state.maxId = watchDogList.length > 0 ? Math.max(...watchDogList.map(item => item.id)) : 0;
     },
-    setMessages: (state, action: PayloadAction<Message[]>) => {
-      const messages = action.payload;
-      state.list = messages;
+    addWatchDog: (state, _: PayloadAction<void>) => {
+      const watchDog: WatchDog = {} as WatchDog;
+      watchDog.id = state.maxId + 1;
+      watchDog.channelList = state.selectedChannels;
+      watchDog.userList = state.selectedUsers;
+
+      state.maxId = watchDog.id;
+
+      state.list.push(watchDog);
     },
-    markDeleted: (state, action: PayloadAction<number[]>) => {
-      const ids = action.payload;
-      state.list.forEach(item => {
-        if (ids.includes(item.id)) {
-          item.isDeleted = true;
-        }
-        if (item.replayTo && ids.includes(item.replayTo.id)) {
-          item.replayTo.isDeleted = true;
-        }
-      });
+    removeWatchDog: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      state.list = state.list.filter(item => item.id !== id);
     },
-    setUser: (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
+    editWatchDog: (state, action: PayloadAction<WatchDog>) => {
+      const watchDog = action.payload;
+      const index = state.list.findIndex(item => item.id === watchDog.id);
+      state.list[index] = watchDog;
     },
-    setChannel: (state, action: PayloadAction<Dialog>) => {
-      state.channel = action.payload;
+    setSelectedChannels: (state, action: PayloadAction<Dialog[]>) => {
+      const channels = action.payload;
+      state.selectedChannels = channels;
     },
-    setWatch: (state, action: PayloadAction<boolean>) => {
-      state.isWatch = action.payload;
+    setSelectedUsers: (state, action: PayloadAction<User[]>) => {
+      const users = action.payload;
+      state.selectedUsers = users;
     },
     clear: () => initialState,
   },

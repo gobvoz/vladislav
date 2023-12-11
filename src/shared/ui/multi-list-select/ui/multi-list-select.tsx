@@ -8,18 +8,12 @@ interface Props {
   minimumChars?: number;
   placeholder?: string;
 
-  currentList: ElementList;
-  foundList: ElementList;
+  currentList: any[];
+  foundList: any[];
 
   getListBySearch: (searchString: string) => void;
-  setSelectedElements: (elementList: ElementList) => void;
+  setSelectedElements: (elementList: any[]) => void;
 }
-
-interface Element {
-  id: string;
-  name: string;
-}
-type ElementList = Array<Element>;
 
 const MultiListSelect = memo((props: Props) => {
   const {
@@ -95,15 +89,15 @@ const MultiListSelect = memo((props: Props) => {
   );
 
   const renderListOfCurrentElements = useCallback(
-    (elementList: ElementList, onElementClick: (id: string) => void) => (
+    (elementList: any, onElementClick: (id: string) => void) => (
       <ul className={cls.currentList}>
-        {elementList.map(element => (
+        {elementList.map((element: any) => (
           <li className={cls.currentListElement} key={element.id}>
             <span className={cls.currentElementName}>
               <button
                 className={cls.currentElementDelete}
                 onClick={() => onElementClick(element.id)}></button>
-              {element.name}
+              {element.title}
             </span>
           </li>
         ))}
@@ -113,7 +107,7 @@ const MultiListSelect = memo((props: Props) => {
   );
 
   const getSelectedClass = useCallback(
-    (id: string, currentList: ElementList) => {
+    (id: string, currentList: Element[]) => {
       const result = currentList.find(currentElement => currentElement.id === id);
 
       if (result) return cls.foundElementSelected;
@@ -122,16 +116,16 @@ const MultiListSelect = memo((props: Props) => {
   );
 
   const renderListOfFoundElements = useCallback(
-    (elementsList: ElementList, currentList: ElementList, onElementClick: (id: string) => void) => {
+    (elementsList: any, currentList: any, onElementClick: (id: string) => void) => {
       return (
         <ul className={cls.foundList}>
-          {elementsList.map(element => (
+          {elementsList.map((element: any) => (
             <li
               className={classNames(cls.foundElement, getSelectedClass(element.id, currentList))}
               key={element.id}
               tabIndex={0}
               onClick={() => onElementClick(element.id)}>
-              {element.name}
+              {element.title}
             </li>
           ))}
         </ul>
@@ -145,7 +139,7 @@ const MultiListSelect = memo((props: Props) => {
       searchString: string,
       isMultiListSearching: boolean,
       isMultiListSelecting: boolean,
-      foundList: ElementList,
+      foundList: Element[],
     ) => {
       if (searchString.length < minimumChars) {
         return `Please enter ${minimumChars - searchString.length} or more characters`;
