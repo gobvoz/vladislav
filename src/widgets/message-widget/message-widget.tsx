@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from 'react';
 
-import { WatchDog, watchDogReducer } from 'entities/watch-dog';
+import { WatchDogCash, WatchDogEditor, WatchDogList, watchDogReducer } from 'entities/watch-dog';
 import { MessageList, messageReducer } from 'entities/message';
 
 import { Section } from 'shared/ui/section';
@@ -9,6 +9,8 @@ import { Tab, TabList } from 'shared/ui/tab-list';
 
 import cls from './message-widget.module.scss';
 import { classNames } from 'shared/libs/class-names';
+import { WatchDog } from 'features/watch-dog';
+import { Button } from 'shared/ui/button';
 
 const reducerList = {
   watchDog: watchDogReducer,
@@ -22,6 +24,7 @@ const tabList = [
 
 const MessageWidget = memo(() => {
   const [activeTab, setActiveTab] = useState(tabList[0]);
+  const [isWatchDogEditorActive, setIsWatchDogEditorActive] = useState(false);
 
   const onTabClick = useCallback((tab: Tab) => {
     setActiveTab(tab);
@@ -30,11 +33,28 @@ const MessageWidget = memo(() => {
   const messageListClassName = classNames({ [cls.hidden]: activeTab.id !== '0' });
   const watchDogClassName = classNames({ [cls.hidden]: activeTab.id !== '1' });
 
+  const toggleEditorVisibility = useCallback(() => {
+    setIsWatchDogEditorActive(!isWatchDogEditorActive);
+  }, [isWatchDogEditorActive]);
+
   return (
     <DynamicModuleLoader reducerList={reducerList}>
       <Section tabs={<TabList tabList={tabList} activeTab={activeTab} onClick={onTabClick} />}>
         <MessageList className={messageListClassName} />
-        <WatchDog className={watchDogClassName} />
+        {isWatchDogEditorActive && (
+          <WatchDogEditor
+            className={watchDogClassName}
+            toggleEditorVisibility={toggleEditorVisibility}
+          />
+        )}
+        {!isWatchDogEditorActive && (
+          <WatchDogList
+            className={watchDogClassName}
+            toggleEditorVisibility={toggleEditorVisibility}
+          />
+        )}
+        <WatchDogCash />
+        <WatchDog />
       </Section>
     </DynamicModuleLoader>
   );

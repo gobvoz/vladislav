@@ -1,10 +1,9 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Dialog, getActiveDialog, getDialogList } from 'entities/dialog';
 
 import { MultiListSelect } from 'shared/ui/multi-list-select/ui/multi-list-select';
-import { WATCH_DOG_SELECTED_DIALOG_LIST } from 'shared/constants/local-storage-key';
 import { getWatchDogSelectedChannels, watchDogActions } from 'entities/watch-dog';
 import { useAppDispatch } from 'shared/hooks';
 
@@ -39,19 +38,8 @@ const SelectDialogs = memo(() => {
     [activeDialog],
   );
 
-  useEffect(() => {
-    const selectedDialogList = JSON.parse(
-      localStorage.getItem(WATCH_DOG_SELECTED_DIALOG_LIST) || '[]',
-    );
-
-    setTimeout(() => {
-      dispatch(setSelectedChannels(selectedDialogList));
-    });
-  }, []);
-
   const onSelectedDialogListChange = useCallback((dialogList: any) => {
     dispatch(setSelectedChannels(dialogList));
-    localStorage.setItem(WATCH_DOG_SELECTED_DIALOG_LIST, JSON.stringify(dialogList));
   }, []);
 
   return (

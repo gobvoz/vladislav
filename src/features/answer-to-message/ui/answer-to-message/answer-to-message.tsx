@@ -1,14 +1,7 @@
-import { memo, useCallback, useEffect, useState } from 'react';
-import { Api } from 'telegram';
+import { memo, useEffect } from 'react';
 
-import { Section } from 'shared/ui/section';
-
-import { Button } from 'shared/ui/button';
-import { MessageReplay } from 'shared/ui/message-replay/message-replay';
-import { MessageElement } from 'shared/ui/message-element/message-element';
-import { adoptMessage } from 'entities/message/model/adapters/adopt-message';
-
-import cls from './answer-to-message.module.scss';
+import { useTelegram } from 'app/providers/telegram-provider';
+import { Message } from 'entities/watch-dog';
 
 interface RandomFields {
   [key: string]: string[];
@@ -18,10 +11,6 @@ interface PatternAnswer {
   randomAnswer: string[];
 }
 type IDB = PatternAnswer & RandomFields;
-
-interface Props {
-  message: Api.Message | null;
-}
 
 const getRandomVariableValue = (variableName: string, DB: IDB) => {
   if (!DB[variableName]) return '';
@@ -53,37 +42,29 @@ const replaceVariables = (text: string, DB: IDB, depth = 1) => {
   return result;
 };
 
+interface Props {
+  messageToAnswer: Message | null;
+  db?: IDB;
+  afterAnswer: (result: null) => void;
+}
+
 const AnswerToMessage = memo((props: Props) => {
-  const { message } = props;
-  const [currentAnswer, setCurrentAnswer] = useState<string>('');
+  const { messageToAnswer, db, afterAnswer } = props;
 
-  const [DB, setDB] = useState<IDB>();
-
-  const reloadDBHandler = useCallback(() => {
-    fetch('/db.local.json')
-      .then(response => {
-        response.json().then(data => {
-          setDB(data as IDB);
-        });
-      })
-      .catch(error => console.dir(error));
-  }, []);
+  const { client } = useTelegram();
 
   useEffect(() => {
-    reloadDBHandler();
-  }, []);
+    if (!db) return;
+    if (!messageToAnswer) return;
 
-  useEffect(() => {
-    if (!DB) return;
-
-    const patternResult = DB.patternAnswer.reduce<string[]>((acc, pattern) => {
+    const patternResult = db.patternAnswer.reduce<string[]>((acc, pattern) => {
       if (!pattern.pattern) return acc;
-      if (!message?.message) return acc;
+      if (!messageToAnswer) return acc;
 
       try {
         const regexp = new RegExp(pattern.pattern, 'i');
 
-        if (regexp.test(message?.message || '')) {
+        if (regexp.test(messageToAnswer?.text || '')) {
           const answer = pattern.options[Math.floor(Math.random() * pattern.options.length)];
 
           acc.push(answer);
@@ -98,32 +79,26 @@ const AnswerToMessage = memo((props: Props) => {
     if (patternResult.length) {
       const result = patternResult[0];
 
-      const replacedResult = replaceVariables(result, DB);
-      //message?.reply({ message: answer });
-      setCurrentAnswer(replacedResult);
+      const replacedResult = replaceVariables(result, db);
+      console.log('user:', messageToAnswer.userId, 'text:', replacedResult);
+      client?.sendMessage(messageToAnswer.channelId, { message: replacedResult });
+      afterAnswer(null);
+      // stop function execution
       return;
     }
 
-    const randomResult = DB.randomAnswer[Math.floor(Math.random() * DB.randomAnswer.length)];
-    const replacedResult = replaceVariables(randomResult, DB);
-    //message?.reply({ message: answer });
-    setCurrentAnswer(replacedResult);
-  }, [message]);
+    const randomResult = db.randomAnswer[Math.floor(Math.random() * db.randomAnswer.length)];
+    const replacedResult = replaceVariables(randomResult, db);
+    console.log('user:', messageToAnswer.userId, 'text:', replacedResult);
 
-  if (!message) return null;
+    client?.sendMessage(messageToAnswer.channelId, {
+      message: replacedResult,
+      replyTo: messageToAnswer?.id,
+    });
+    afterAnswer(null);
+  }, [messageToAnswer, db, afterAnswer]);
 
-  const adoptedMessage = adoptMessage(message);
-
-  return (
-    <Section label={`Test answer section`}>
-      <MessageElement message={adoptedMessage}>
-        <MessageReplay message={adoptedMessage} />
-      </MessageElement>
-      <p>{currentAnswer}</p>
-
-      <Button onClick={reloadDBHandler}>Reload DB</Button>
-    </Section>
-  );
+  return null;
 });
 
 export { AnswerToMessage };

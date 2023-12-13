@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EntityLike } from 'telegram/define';
 
@@ -8,7 +8,6 @@ import { getActiveDialog } from 'entities/dialog';
 
 import { MultiListSelect } from 'shared/ui/multi-list-select/ui/multi-list-select';
 
-import { WATCH_DOG_SELECTED_USER_LIST } from 'shared/constants/local-storage-key';
 import { User, adoptUser, adoptUserList } from 'entities/user';
 import { getWatchDogSelectedUsers, watchDogActions } from 'entities/watch-dog';
 import { useAppDispatch } from 'shared/hooks';
@@ -64,17 +63,8 @@ const SelectUsers = memo(() => {
     [activeDialog],
   );
 
-  useEffect(() => {
-    const selectedUserList = JSON.parse(localStorage.getItem(WATCH_DOG_SELECTED_USER_LIST) || '[]');
-
-    setTimeout(() => {
-      dispatch(setSelectedUsers(selectedUserList));
-    });
-  }, []);
-
   const onSelectedUserListChange = useCallback((userList: any) => {
     dispatch(setSelectedUsers(userList));
-    localStorage.setItem(WATCH_DOG_SELECTED_USER_LIST, JSON.stringify(userList));
   }, []);
 
   return (
@@ -83,7 +73,7 @@ const SelectUsers = memo(() => {
       foundList={foundUserList}
       getListBySearch={getUserListBySearch}
       setSelectedElements={onSelectedUserListChange}
-      placeholder="Start typing to search user ..."
+      placeholder={`The user will be searched based on the selected dialogue (${activeDialog?.title})`}
     />
   );
 });

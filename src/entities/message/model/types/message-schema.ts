@@ -5,4 +5,5 @@ export interface MessageSchema {
   error: unknown | undefined;
 
   list: Message[];
+  last: Message | null;
 }

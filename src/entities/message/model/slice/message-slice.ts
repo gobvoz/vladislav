@@ -7,6 +7,7 @@ const initialState: MessageSchema = {
   isLoading: false,
   error: undefined,
   list: [],
+  last: null,
 };
 
 const messageSlice = createSlice({
@@ -29,6 +30,7 @@ const messageSlice = createSlice({
         message.replayTo = replayTo;
       }
       state.list.push(message);
+      state.last = message;
     },
     setMessageList: (state, action: PayloadAction<Message[]>) => {
       const messages = action.payload;
