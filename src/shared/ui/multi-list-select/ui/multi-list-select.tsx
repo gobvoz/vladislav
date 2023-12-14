@@ -3,19 +3,26 @@ import { SyntheticEvent, memo, useCallback, useEffect, useRef, useState } from '
 import cls from './multi-list-select.module.scss';
 import { classNames } from 'shared/libs/class-names';
 
-interface Props {
+interface BaseElement {
+  id: string;
+  title: string;
+}
+/* eslint-disable-next-line @typescript-eslint/ban-types */
+type Element<T = {}> = BaseElement & T;
+
+interface Props<T extends Element> {
   className?: string;
   minimumChars?: number;
   placeholder?: string;
 
-  currentList: any[];
-  foundList: any[];
+  currentList: T[];
+  foundList: T[];
 
   getListBySearch: (searchString: string) => void;
-  setSelectedElements: (elementList: any[]) => void;
+  setSelectedElements: (elementList: T[]) => void;
 }
 
-const MultiListSelect = memo((props: Props) => {
+const MultiListSelect = memo(<T extends Element>(props: Props<T>) => {
   const {
     className,
     minimumChars = 3,
@@ -89,9 +96,9 @@ const MultiListSelect = memo((props: Props) => {
   );
 
   const renderListOfCurrentElements = useCallback(
-    (elementList: any, onElementClick: (id: string) => void) => (
+    (elementList: T[], onElementClick: (id: string) => void) => (
       <ul className={cls.currentList}>
-        {elementList.map((element: any) => (
+        {elementList.map((element: T) => (
           <li className={cls.currentListElement} key={element.id}>
             <span className={cls.currentElementName}>
               <button
@@ -116,10 +123,10 @@ const MultiListSelect = memo((props: Props) => {
   );
 
   const renderListOfFoundElements = useCallback(
-    (elementsList: any, currentList: any, onElementClick: (id: string) => void) => {
+    (elementsList: T[], currentList: T[], onElementClick: (id: string) => void) => {
       return (
         <ul className={cls.foundList}>
-          {elementsList.map((element: any) => (
+          {elementsList.map((element: T) => (
             <li
               className={classNames(cls.foundElement, getSelectedClass(element.id, currentList))}
               key={element.id}
