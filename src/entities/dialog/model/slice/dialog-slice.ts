@@ -51,6 +51,9 @@ const dialogSlice = createSlice({
       for (let i = index; i > 0; i--) {
         if (byPinnedDate(updatedDialog, list[i - 1]) <= 0) {
           list[i] = list[i - 1];
+
+          // add the updated dialog to the beginning of the list if it's the first dialog
+          if (i === 1) list[i - 1] = updatedDialog;
         } else {
           list[i] = updatedDialog;
           break;

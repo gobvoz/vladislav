@@ -76,25 +76,39 @@ const AnswerToMessage = memo((props: Props) => {
       return acc;
     }, []);
 
+    let replacedResult = '';
+
     if (patternResult.length) {
       const result = patternResult[0];
-
-      const replacedResult = replaceVariables(result, db);
-      console.log('user:', messageToAnswer.userId, 'text:', replacedResult);
-      client?.sendMessage(messageToAnswer.channelId, { message: replacedResult });
-      afterAnswer(null);
-      // stop function execution
-      return;
+      replacedResult = replaceVariables(result, db);
+    } else {
+      const randomResult = db.randomAnswer[Math.floor(Math.random() * db.randomAnswer.length)];
+      replacedResult = replaceVariables(randomResult, db);
     }
 
-    const randomResult = db.randomAnswer[Math.floor(Math.random() * db.randomAnswer.length)];
-    const replacedResult = replaceVariables(randomResult, db);
-    console.log('user:', messageToAnswer.userId, 'text:', replacedResult);
-
+    // send answer to user
     client?.sendMessage(messageToAnswer.channelId, {
       message: replacedResult,
       replyTo: messageToAnswer?.id,
     });
+
+    //generate message text to save
+    const replayedMessageText = messageToAnswer.isReplay
+      ? `${messageToAnswer.replayTo?.userName}: ${messageToAnswer.replayTo?.text}`
+      : '';
+    const textToReplay = `${messageToAnswer.userName}: ${messageToAnswer.text}`;
+
+    // save original user message
+    client?.sendMessage('Me', {
+      message: replayedMessageText + '\n' + textToReplay,
+      replyTo: messageToAnswer?.id,
+    });
+    // save answer to user
+    client?.sendMessage('Me', {
+      message: textToReplay + '\n' + replacedResult,
+      replyTo: messageToAnswer?.id,
+    });
+
     afterAnswer(null);
   }, [messageToAnswer, db, afterAnswer]);
 

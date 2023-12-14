@@ -4,13 +4,14 @@ import { DeletedMessage, DeletedMessageEvent } from 'telegram/events/DeletedMess
 
 import { useTelegram } from 'app/providers/telegram-provider';
 
-import { messageActions } from 'entities/message';
-import { adoptMessage, adoptMessageList } from 'entities/message/model/adapters/adopt-message';
+import { Message, messageActions } from 'entities/message';
+import { adoptMessage } from 'entities/message/model/adapters/adopt-message';
 
 import { useAppDispatch } from 'shared/hooks';
 import { useSelector } from 'react-redux';
 import { getActiveDialog } from 'entities/dialog/model/selectors/dialog-selectors';
 import { dialogActions } from 'entities/dialog';
+import { Api } from 'telegram';
 
 interface Props {
   children: React.ReactNode;
@@ -33,6 +34,30 @@ const MessageWatcher = memo((props: Props) => {
   const { client, isAuth } = useTelegram();
 
   const activeDialog = useSelector(getActiveDialog);
+
+  const adoptMessageList = async (messages: Api.Message[]) => {
+    const messagePromiseList = messages.map(message => {
+      const adoptedMessage = adoptMessage(message);
+
+      if (!adoptedMessage.isReplay) return new Promise(resolve => resolve(adoptedMessage));
+
+      return message.getReplyMessage().then(replayMessage => {
+        if (!replayMessage) return adoptedMessage;
+        if (!adoptedMessage.replayTo) return adoptedMessage;
+
+        const adoptedReplayMessage = adoptMessage(replayMessage);
+        adoptedMessage.replayTo.isDeleted = adoptedReplayMessage.isDeleted;
+        adoptedMessage.replayTo.text = adoptedReplayMessage.text;
+        adoptedMessage.replayTo.userName = adoptedReplayMessage.userName;
+
+        return adoptedMessage;
+      });
+    });
+
+    const result = await Promise.all(messagePromiseList);
+
+    return result;
+  };
 
   const eventNewMessage = async (event: NewMessageEvent) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -62,6 +87,18 @@ const MessageWatcher = memo((props: Props) => {
     if (!activeDialog) return;
 
     const adoptedMessage = adoptMessage(event.message);
+
+    if (adoptedMessage.isReplay) {
+      const replayedMessage = await event.message.getReplyMessage();
+
+      if (!replayedMessage || !adoptedMessage.replayTo) return;
+
+      const adoptedReplayedMessage = adoptMessage(replayedMessage);
+      adoptedMessage.replayTo.isDeleted = adoptedReplayedMessage.isDeleted;
+      adoptedMessage.replayTo.text = adoptedReplayedMessage.text;
+      adoptedMessage.replayTo.userName = adoptedReplayedMessage.userName;
+    }
+
     const dialogUpdate = {
       id: (peer.channelId || peer.chatId || peer.userId || '').toString(),
       message: adoptedMessage.text,
@@ -88,10 +125,6 @@ const MessageWatcher = memo((props: Props) => {
     }
   };
 
-  const eventPrevedMedved = async (event: NewMessageEvent) => {
-    event.message.reply({ message: 'Превед, коль ни шутиш.' });
-  };
-
   const eventDeletedMessage = async (event: DeletedMessageEvent) => {
     console.log('Deleted message', event.deletedIds);
     dispatch(messageActions.markDeleted(event.deletedIds));
@@ -109,7 +142,11 @@ const MessageWatcher = memo((props: Props) => {
           limit: 10,
         })
         .then(messages => {
-          dispatch(messageActions.setMessageList(adoptMessageList(messages)));
+          adoptMessageList(messages).then(adoptedMessages => {
+            console.log('Adopted messages:', adoptedMessages);
+            dispatch(messageActions.setMessageList(adoptedMessages as Message[]));
+          });
+          //dispatch(messageActions.setMessageList(adoptMessageList(messages)));
         });
     });
   }, [activeDialog]);
@@ -124,12 +161,10 @@ const MessageWatcher = memo((props: Props) => {
     });
 
     client.addEventHandler(eventNewMessage, new NewMessage({}));
-    client.addEventHandler(eventPrevedMedved, new NewMessage({ pattern: /превед медвед/ }));
     client.addEventHandler(eventDeletedMessage, new DeletedMessage({}));
 
     return () => {
       client.removeEventHandler(eventNewMessage, new NewMessage({}));
-      client.removeEventHandler(eventPrevedMedved, new NewMessage({ pattern: /превед медвед/ }));
       client.removeEventHandler(eventDeletedMessage, new DeletedMessage({}));
     };
   }, [isAuth, activeDialog]);

@@ -16,41 +16,13 @@ const messageSlice = createSlice({
   reducers: {
     setMessage: (state, action: PayloadAction<Message>) => {
       const message = action.payload;
-
-      if (message.isReplay && message.replayTo?.id) {
-        const replayTo = state.list.find(item => item.id === message.replayTo?.id);
-
-        if (replayTo) {
-          message.replayTo.text = replayTo.text;
-          message.replayTo.userName = replayTo.userName;
-        } else {
-          message.replayTo = undefined;
-        }
-
-        message.replayTo = replayTo;
-      }
       state.list.push(message);
       state.last = message;
     },
     setMessageList: (state, action: PayloadAction<Message[]>) => {
       const messages = action.payload;
 
-      messages.forEach(message => {
-        if (message.isReplay && message.replayTo?.id) {
-          const replayTo = messages.find(item => item.id === message.replayTo?.id);
-
-          if (replayTo) {
-            message.replayTo.text = replayTo.text;
-            message.replayTo.userName = replayTo.userName;
-          } else {
-            message.replayTo = undefined;
-          }
-
-          message.replayTo = replayTo;
-        }
-      });
-
-      state.list = messages;
+      state.list = messages.reverse();
     },
     markDeleted: (state, action: PayloadAction<number[]>) => {
       const ids = action.payload;
