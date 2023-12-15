@@ -67,11 +67,10 @@ const MessageWatcher = memo((props: Props) => {
     // @ts-ignore
     const chat: Chat = event.message._chat;
 
-    const displayedSenderName = [
-      event.message._sender?.firstName || '',
-      event.message._sender?.lastName || '',
-    ].join(' ');
-    const displayedChatTitle = chat?.title || '';
+    const displayedSenderName = event.message._sender
+      ? [event.message._sender?.firstName || '', event.message._sender?.lastName || ''].join(' ')
+      : 'Me';
+    const displayedChatTitle = chat ? chat.title : 'Private chat';
 
     console.groupCollapsed(displayedChatTitle, `(${displayedSenderName})`);
     console.log(event);

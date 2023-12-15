@@ -24,7 +24,7 @@ const defaultDialog: Dialog = {
   id: '0',
   title: 'All dialogs',
   message: '',
-  date: 0,
+  date: Number.MAX_SAFE_INTEGER,
 
   isArchived: false,
   isChannel: false,
