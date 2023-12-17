@@ -38,20 +38,23 @@ const WatchDog = memo(() => {
   useEffect(() => {
     if (!DB) return;
     if (!lastMessage) return;
-
+    console.group('last message from:', lastMessage.userName);
     watchDogList.some(watchDog => {
       watchDog.channelList.some(channel => {
-        if (channel.id !== lastMessage?.channelId) return false;
-
+        console.log('check channel', channel.id, lastMessage?.channelId);
+        if (!channel.id.includes(lastMessage?.channelId)) return false;
+        console.log('channel found');
         watchDog.userList.some(user => {
+          console.log('check user');
           if (user.id !== lastMessage?.userId) return false;
-
+          console.log('user found');
           setMessageToAnswer(lastMessage);
 
           return true;
         });
       });
     });
+    console.groupEnd();
   }, [lastMessage, watchDogList, messageToAnswer]);
 
   return (

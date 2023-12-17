@@ -87,10 +87,10 @@ const AnswerToMessage = memo((props: Props) => {
     }
 
     // send answer to user
-    client?.sendMessage(messageToAnswer.channelId, {
-      message: replacedResult,
-      replyTo: messageToAnswer?.id,
-    });
+    // client?.sendMessage(messageToAnswer.channelId, {
+    //   message: replacedResult,
+    //   replyTo: messageToAnswer?.id,
+    // });
 
     //generate message text to save
     const replayedMessageText = messageToAnswer.isReplay

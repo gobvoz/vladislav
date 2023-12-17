@@ -3,6 +3,10 @@ import { Api } from 'telegram';
 import { Message } from '../types/message';
 
 export const adoptMessage = (message: Api.Message): Message => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const peer: Peer = message.peerId;
+
   const adoptedMessage: Message = {
     id: message.id,
     isReplay: !!message.isReply,
@@ -13,7 +17,7 @@ export const adoptMessage = (message: Api.Message): Message => {
     userId: message._senderId?.toString() || '',
     userName: [message._sender?.firstName || '', message._sender?.lastName || ''].join(' '),
     userLogin: '',
-    channelId: (message.chatId || '').toString(),
+    channelId: (peer.channelId || peer.userId || peer.chatId || '').toString(),
   };
 
   if (message.isReply) {
